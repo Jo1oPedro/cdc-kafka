@@ -1,0 +1,17 @@
+{
+    "name": "cdc/kafka",
+    "autoload": {
+        "psr-4": {
+            "Cdc\\Kafka\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jo1oPedro",
+            "email": "joao.pedreira@estudante.ufjf.br"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
