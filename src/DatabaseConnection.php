@@ -23,13 +23,13 @@ class DatabaseConnection
             try {
                 switch ($_ENV['driver']) {
                     case 'mysql':
-                        $dsn = "mysql:host={$_ENV['host']};dbname={$_ENV['dbname']};charset=utf8";
+                        $dsn = "mysql:host={$_ENV['host']};dbname={$_ENV['dbname']};charset=utf8;port={$_ENV['port']}";
                         break;
 
                     case 'pgsql':
                     case 'postgres':
                     case 'postgresql':
-                        $dsn = "pgsql:host={$_ENV['host']};dbname={$_ENV['dbname']}";
+                        $dsn = "pgsql:host={$_ENV['host']};dbname={$_ENV['dbname']};port={$_ENV['port']}";
                         break;
 
                     default:

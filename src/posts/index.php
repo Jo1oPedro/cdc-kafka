@@ -51,3 +51,55 @@ try {
     echo 'Erro ao criar tabelas: ' . $e->getMessage() . PHP_EOL;
 }
 
+
+$conf = new RdKafka\Conf();
+
+// ID único do consumer group
+$conf->set('group.id', 'php-consumer-group');
+
+// Conecta ao broker
+$conf->set('metadata.broker.list', 'kafka:9092');
+
+// Importante: ler desde o início se não houver offset salvo
+$conf->set('auto.offset.reset', 'earliest');
+
+// Configuração opcional para auto commit
+$conf->set('enable.auto.commit', 'true');
+
+// Conectar ao Kafka broker
+$rk = new RdKafka\KafkaConsumer($conf);
+$rk->subscribe(['mysql.comments_db.comments']);
+
+// Loop infinito para ler mensagens
+echo "📡 Aguardando mensagens no tópico 'meu-topico'...\n";
+
+while (true) {
+    $message = $rk->consume(120 * 1000); // timeout 120s
+    if ($message === null) continue;
+
+    switch ($message->err) {
+        case RD_KAFKA_RESP_ERR_NO_ERROR:
+            $payload = json_decode($message->payload, true);
+            if (isset($payload['after'])) {
+                $data = $payload['after'];
+                file_put_contents('oimundo.txt', print_r($payload, true), FILE_APPEND);
+                echo "Atualizado comentário ID {$data['id']}\n";
+            }
+            file_put_contents('oimundo.txt', print_r($payload, true), FILE_APPEND);
+            echo "oi mundo";
+            break;
+
+        case RD_KAFKA_RESP_ERR__PARTITION_EOF:
+            // fim da partição
+            break;
+
+        case RD_KAFKA_RESP_ERR__TIMED_OUT:
+            break;
+
+        default:
+            echo "Erro: {$message->errstr()}\n";
+            break;
+    }
+}
+
+

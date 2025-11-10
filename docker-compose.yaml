@@ -48,7 +48,7 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: 123456
     ports:
-      - "5432:5432"
+      - "5435:5432"
 
   kafka-connect:
     image: confluentinc/cp-kafka-connect-base:latest
